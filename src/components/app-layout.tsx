@@ -72,7 +72,7 @@ const AppSidebar: FC = () => {
   const pathname = usePathname();
 
   return (
-    <Sidebar>
+    <Sidebar className='fixed'>
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
           <Logo className="w-8 h-8 text-primary" />
