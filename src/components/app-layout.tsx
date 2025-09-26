@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { FC, ReactNode } from 'react';
@@ -9,9 +8,7 @@ import {
   FileText,
   LayoutDashboard,
   Lightbulb,
-  Settings,
   Wrench,
-  PanelLeft,
 } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import {
@@ -28,9 +25,18 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { Logo } from '@/components/logo';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const navItems = [
   {
@@ -97,7 +103,13 @@ const AppSidebar: FC = () => {
       <SidebarFooter className="p-4">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
-            {userAvatar && <AvatarImage src={userAvatar.imageUrl} alt="User" data-ai-hint={userAvatar.imageHint}/>}
+            {userAvatar && (
+              <AvatarImage
+                src={userAvatar.imageUrl}
+                alt="User"
+                data-ai-hint={userAvatar.imageHint}
+              />
+            )}
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
@@ -112,12 +124,39 @@ const AppSidebar: FC = () => {
   );
 };
 
-const Header: FC<{ pageTitle: string }> = ({ pageTitle }) => {
+const Header: FC = () => {
   const { isMobile } = useSidebar();
+  const userAvatar = PlaceHolderImages.find((img) => img.id === 'user-avatar');
+
   return (
-    <header className="flex h-14 items-center gap-4 border-b bg-card px-4 md:px-8 lg:h-[60px]">
+    <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       {isMobile && <SidebarTrigger />}
-      {!isMobile && <div className="w-8" />}
+      <div className="relative ml-auto flex-1 md:grow-0"></div>
+      <ThemeToggle />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
+            <Avatar>
+              {userAvatar && (
+                <AvatarImage
+                  src={userAvatar.imageUrl}
+                  alt="User"
+                  data-ai-hint={userAvatar.imageHint}
+                />
+              )}
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem>Support</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>Logout</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </header>
   );
 };
@@ -125,12 +164,16 @@ const Header: FC<{ pageTitle: string }> = ({ pageTitle }) => {
 export const AppLayout: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset className="flex flex-col">
-        {/* <Header pageTitle="Dashboard" /> */}
-        <main className="flex-1 overflow-y-auto">{children}</main>
-        <Toaster />
-      </SidebarInset>
+      <div className="flex min-h-screen w-full flex-col bg-muted/40">
+        <AppSidebar />
+        <SidebarInset className="flex flex-col sm:gap-4 sm:py-4">
+          <Header />
+          <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+            {children}
+          </main>
+          <Toaster />
+        </SidebarInset>
+      </div>
     </SidebarProvider>
   );
 };
