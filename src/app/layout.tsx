@@ -4,7 +4,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'AquaTrack',
+  title: 'Ultrawise',
   description: 'AI-powered water management for data centers',
 };
 

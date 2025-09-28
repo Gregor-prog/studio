@@ -74,11 +74,11 @@ const AppSidebar: FC = () => {
   return (
     <Sidebar className='fixed'>
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2">
-          <Logo className="w-8 h-8 text-primary" />
+        <div className="flex items-center gap-4">
+          <Logo className="w-8 h-8" style={{ filter: "brightness(0) invert(1)" }} />
           <div className="flex flex-col">
             <h2 className="text-lg font-semibold tracking-tight font-headline">
-              AquaTrack
+              Ultrawise
             </h2>
           </div>
         </div>

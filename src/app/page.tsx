@@ -1,3 +1,4 @@
+"use client"
 import {
   Card,
   CardContent,
@@ -15,14 +16,39 @@ import {
 } from '@/lib/data';
 import { Droplets, Waves, Gauge, Leaf, Activity } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { useState,useEffect } from 'react';
+import ControlledModal from '@/components/inputValue';
+import { waterLevelCalculate } from '@/lib/calculateVolume';
+
 
 export default function DashboardPage() {
+  const [radius,setRadius] = useState<number | null>(null)
+  const [dialog,setDialog] = useState(true)
+  const [volume,setvolume] = useState(0)
+  const [height, setheight] = useState(0)
+  const [waterLevel, setwaterlevel] = useState(0)
+  
+
+  let ultrasonicHeight = 100
+
+  setInterval(() => {
+    let waterLevel = waterLevelCalculate(ultrasonicHeight,radius,height,volume)
+    setwaterlevel(waterLevel)
+  }, 60000)
+
+  useEffect(() => {
+      if(radius === null || radius === undefined || radius ===  0 || Number.isNaN(radius)){
+        setDialog(true)
+      }else(
+        setDialog(false)
+      )
+  },[radius])
   return (
     <>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Water Level"
-          value={`${currentSensorData.waterLevel}%`}
+          value={`${waterLevel}%`}
           icon={Droplets}
           description="Reservoir level"
         />
@@ -45,7 +71,7 @@ export default function DashboardPage() {
           description="Water Usage Effectiveness"
         />
       </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-7">
+      <div className="grid grid-cols-1 7">
         <Card className="col-span-1 lg:col-span-4">
           <CardHeader>
             <CardTitle>Historical Water Consumption</CardTitle>
@@ -55,7 +81,7 @@ export default function DashboardPage() {
             <WaterUsageChart />
           </CardContent>
         </Card>
-        <div className="col-span-1 space-y-4 lg:col-span-3">
+        {/* <div className="col-span-1 space-y-4 lg:col-span-3">
           <SystemStatusCard systemHealth={systemHealth} />
           <Card>
             <CardHeader>
@@ -80,7 +106,8 @@ export default function DashboardPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
+        <ControlledModal open={dialog} setopen={setDialog} radius={radius} setRadius={setRadius} volume={volume} setvolume={setvolume} height={height} setheight={setheight} />
       </div>
     </>
   );
