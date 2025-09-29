@@ -18,7 +18,7 @@ import { Droplets, Waves, Gauge, Leaf, Activity } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useState,useEffect } from 'react';
 import ControlledModal from '@/components/inputValue';
-import { waterLevelCalculate } from '@/lib/calculateVolume';
+import { consumption, flowRate, waterLevelCalculate } from '@/lib/calculateVolume';
 
 
 export default function DashboardPage() {
@@ -27,6 +27,8 @@ export default function DashboardPage() {
   const [volume,setvolume] = useState(0)
   const [height, setheight] = useState(0)
   const [waterLevel, setwaterlevel] = useState(0)
+  const [volumeConsumed,setConsumed] = useState(0)
+  const [volumeFlowRate, setrate] = useState(0)
   
 
   let ultrasonicHeight = 100
@@ -34,7 +36,11 @@ export default function DashboardPage() {
   setInterval(() => {
     let waterLevel = waterLevelCalculate(ultrasonicHeight,radius,height,volume)
     setwaterlevel(waterLevel)
-  }, 60000)
+    let volumeCons : any = consumption(radius)
+    setConsumed(volumeCons)
+    let flowRateRe : any = flowRate(radius)
+    setrate(flowRateRe)
+  }, 10000)
 
   useEffect(() => {
       if(radius === null || radius === undefined || radius ===  0 || Number.isNaN(radius)){
@@ -42,34 +48,39 @@ export default function DashboardPage() {
       }else(
         setDialog(false)
       )
-  },[radius])
+      let waterLevel = waterLevelCalculate(ultrasonicHeight,radius,height,volume)
+      setwaterlevel(waterLevel)
+  })
   return (
     <>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <StatCard
           title="Water Level"
-          value={`${waterLevel}%`}
+          number={waterLevel}
+          value={`${waterLevel.toFixed(4)}%`}
           icon={Droplets}
           description="Reservoir level"
         />
         <StatCard
-          title="Flow Rate"
-          value={`${currentSensorData.flowRate} L/min`}
+          title="Average Flow Rate"
+          number={volumeFlowRate}
+          value={`${volumeFlowRate.toFixed(4)} L/min`}
           icon={Waves}
           description="Cooling system intake"
         />
         <StatCard
           title="Consumption"
-          value={`${currentSensorData.consumption} m³`}
+          number={volumeConsumed}
+          value={`${volumeConsumed.toFixed(4)} m³`}
           icon={Gauge}
           description="24-hour usage"
         />
-        <StatCard
+        {/* <StatCard
           title="WUE"
           value={`${currentSensorData.wue} L/kWh`}
           icon={Leaf}
           description="Water Usage Effectiveness"
-        />
+        /> */}
       </div>
       <div className="grid grid-cols-1 7">
         <Card className="col-span-1 lg:col-span-4">

@@ -49,11 +49,11 @@ const navItems = [
     icon: AlertTriangle,
     label: 'Anomalies',
   },
-  {
-    href: '/maintenance',
-    icon: Wrench,
-    label: 'Maintenance',
-  },
+  // {
+  //   href: '/maintenance',
+  //   icon: Wrench,
+  //   label: 'Maintenance',
+  // },
   {
     href: '/optimizations',
     icon: Lightbulb,
